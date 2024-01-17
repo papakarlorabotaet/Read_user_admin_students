@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.urfu</groupId>
-    <artifactId>test-security2db-themeleaf</artifactId>
+    <artifactId>READ_USER_ADMIN-Students</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>test-security2db-themeleaf</name>
     <description>test-security2db-themeleaf</description>
@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
 
         <dependency>
@@ -61,6 +61,10 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Student Management System</title>
@@ -12,7 +12,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
+    <div class="container">
         <a class="navbar-brand" th:href="@{/index}">Student Management System</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,12 +23,15 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/about}">About</a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
 <br/><br/>
-<div class="container">
+<div class="container" sec:authorize="!isAuthenticated()">
     <div class="row">
         <div class="col-md-6 offset-md-3">
 
@@ -72,9 +75,10 @@
                             />
                         </div>
                         <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <!--<button type="button" class="btn btn-primary">Light</button>-->
+                            <button type="submit" class="btn btn-outline-primary">Submit</button>
                             <span> Not registered ?
-                                <a th:href="@{/register}">Register/Signup here</a>
+                                <a th:href="@{/register}">Register here</a>
                             </span>
                         </div>
                     </form>

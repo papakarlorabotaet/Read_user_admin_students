@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,4 +26,18 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
+
+    public String getNameWithoutRole(){ //userPermission
+
+        String[] roles = name.split("_");
+        String roles1 = roles[1];
+        String[] roles2 = roles1.split("]");
+        return roles2[0];
+
+
+//        String[] roles = name.split("_");
+//        return roles[1];
+    }
+
+
 }

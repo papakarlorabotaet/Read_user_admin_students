@@ -13,6 +13,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -23,21 +25,26 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/register/**").permitAll()
-                .antMatchers("/index").permitAll()
-                .antMatchers("/users").hasRole("ADMIN")
+                    .antMatchers("/register/**").permitAll()
+                    .antMatchers("/index").permitAll()
+                    .antMatchers("/users/**").hasRole("ADMIN")
+                    .antMatchers("/list").authenticated()
+                    .antMatchers("/addStudentForm").hasAnyRole("ADMIN","USER")
                 .and()
-                .formLogin(
+                    .exceptionHandling().accessDeniedPage("/permissionDenied")
+                .and()
+                    .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users")
+                                .defaultSuccessUrl("/list")
                                 .permitAll()
-                ).logout(
+                    ).logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
-                );
+                    )
+                ;
         return http.build();
     }
 }

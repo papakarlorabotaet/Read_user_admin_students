@@ -1,77 +1,116 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
-  <title>Student Management System</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-        crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>KURSA4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
 </head>
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/index}">Student Management System</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
-        </li>
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/index}">Student Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/about}">About</a>
+                </li>
+
+            </ul>
+
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" sec:authorize="(hasRole('ROLE_ADMIN'))"
+                       th:href="@{/users/action}">UsersAction</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" sec:authorize="(hasRole('ROLE_ADMIN'))">ADMIN</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" sec:authorize="(hasRole('ROLE_USER'))">USER</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" sec:authorize="(hasRole('ROLE_READ'))">READ</a>
+                </li>
+
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <span class="nav-link" th:text="${#authentication.name}"></span>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link btn btn-link">Logout</button>
+                    </form>
+                </li>
+            </ul>
+
+        </div>
     </div>
-  </div>
+
 </nav>
 <div class="container">
+    <div class="row col-md-10">
+        <h2>List of Students</h2>
+    </div>
 
-  <hr/>
-  <a th:href="@{/addStudentForm}" class="btn btn-primary">Add Student</a>
-  <br/><br/>
-  <table class="table table-bordered table-striped" id="studentTable">
+    <hr/>
+    <a th:href="@{/addStudentForm}" class="btn btn-outline-primary">Add Student</a>
+    <br/>
 
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Surname</th>
-      <th>Faculty</th>
-      <th>Age</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="student: ${students}">
-      <td th:text="${student.surname}" />
-      <td th:text="${student.name}" />
-      <td th:text="${student.faculty}" />
-      <td th:text="${student.age}" />
-      <td>
-        <a th:href="@{/showUpdateForm(studentId=${student.id})}" class="btn btn-info">Update</a>
+    <table class="table table-bordered table-striped" id="studentTable">
 
-        <a th:href="@{/deleteStudent(studentId=${student.id})}" class="btn btn-danger ml-2">Delete</a>
-      </td>
-    </tr>
-    </tbody>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Faculty</th>
+            <th>Age</th>
+            <th>
+                <a sec:authorize="!(hasRole('ROLE_READ'))">Settings</a>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student: ${students}">
+            <td th:text="${student.name}"/>
+            <td th:text="${student.surname}"/>
+            <td th:text="${student.faculty}"/>
+            <td th:text="${student.age}"/>
+            <td>
+                <a th:href="@{/showUpdateForm(studentId=${student.id})}" sec:authorize="!hasRole('ROLE_READ')"
+                   class="btn btn-outline-dark">Update</a>
+                <a th:href="@{/deleteStudent(studentId=${student.id})}" sec:authorize="!hasRole('ROLE_READ')"
+                   class="btn btn-outline-danger ml-4">Delete</a> <!-- ml-4-->
+            </td>
+        </tr>
+        </tbody>
 
-  </table>
+    </table>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 <script>
-  $(document).ready(function() {
-    $("#studentTable").DataTable({
-      'aoColumnDefs': [{
-        'bSortable': false,
-        'aTargets': [-1] /* 1st one, start by the right */
-      }]
-    });
-  })
+    $(document).ready(function () {
+        $("#studentTable").DataTable({
+            'aoColumnDefs': [{
+                'bSortable': false,
+                'aTargets': [-1] /* 1st one, start by the right */
+            }]
+        });
+    })
 </script>
-</body></html>
+</body>
+</html>
